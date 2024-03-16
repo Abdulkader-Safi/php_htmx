@@ -45,7 +45,7 @@ switch ($_GET['action']) {
     break;
 
   case 'update_post':
-    header('HX-Trigger: post_update');
+    header('HX-Trigger: update_post');
     $id = $_POST['id'];
     $title = $_POST['title'];
     $content = $_POST['content'];
@@ -59,7 +59,7 @@ switch ($_GET['action']) {
     break;
 
   case 'delete_post':
-    header('HX-Trigger: post_update');
+    header('HX-Trigger: delete_post');
     $id = $_GET['id'];
     $sql = $db->prepare('delete from posts where id = :id limit 1');
     $sql->execute([

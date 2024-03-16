@@ -27,7 +27,11 @@
         <button type="submit" class="btn btn-primary">Add Post</button>
       </form>
 
-      <div class="row nh-posts" hx-get="./api.php?action=get_posts" hx-trigger="load once, post_update"></div>
+      <div
+        class="row nh-posts"
+        hx-get="./api.php?action=get_posts"
+        hx-trigger="load once, update_post, delete_post"
+      ></div>
     </div>
   </body>
 </html>
