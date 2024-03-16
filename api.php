@@ -10,6 +10,8 @@ function render_post($id, $title, $content, $image)
       <div class="card-body">
         <h5 class="card-title"><?= $title ?></h5>
         <h6 class="card-subtitle mb-2 text-body-secondary"><?= $content ?></h6>
+        <img src="<?= $image ?>" alt="image" class="rounded w-100">
+        <br />
         <a class="btn btn-danger" hx-delete='./api.php?action=delete_post&id=<?= $id ?>'>Delete Post</a>
         <a class="btn btn-success" hx-get='./edit.php?id=<?= $id ?>&title=<?= $title ?>&content=<?= $content ?>&image=<?= $image ?>' hx-target='#post-<?= $id ?>'>Edit Post</a>
       </div>
@@ -21,6 +23,10 @@ function render_post($id, $title, $content, $image)
 switch ($_GET['action']) {
   case 'add_post':
 
+    $uploadDir = 'uploads/';
+    $imageSrc = $uploadDir . basename($_FILES['file']['name']);
+    move_uploaded_file($_FILES['file']['tmp_name'], $imageSrc);
+
     if ($_POST['title'] == "" || $_POST['content'] == "") {
       break;
     }
@@ -29,10 +35,10 @@ switch ($_GET['action']) {
     $sql->execute([
       ":title" => $_POST['title'],
       ":content" => $_POST['content'],
-      ":image" => "xxx",
+      ":image" => $imageSrc,
     ]);
 
-    render_post($db->lastInsertId(), $_POST['title'], $_POST['content'], "xxx");
+    render_post($db->lastInsertId(), $_POST['title'], $_POST['content'], $imageSrc);
     break;
 
   case 'get_posts':
