@@ -10,8 +10,8 @@ function render_post($id, $title, $content, $image)
       <div class="card-body">
         <h5 class="card-title"><?= $title ?></h5>
         <h6 class="card-subtitle mb-2 text-body-secondary"><?= $content ?></h6>
-        <a href="#" class="btn btn-danger">Delete Post</a>
-        <a href="#" class="btn btn-success" hx-get='./edit.php?id=<?= $id ?>&title=<?= $title ?>&content=<?= $content ?>&image=<?= $image ?>' hx-target='#post-<?= $id ?>'>Edit Post</a>
+        <a class="btn btn-danger" hx-delete='./api.php?action=delete_post&id=<?= $id ?>'>Delete Post</a>
+        <a class="btn btn-success" hx-get='./edit.php?id=<?= $id ?>&title=<?= $title ?>&content=<?= $content ?>&image=<?= $image ?>' hx-target='#post-<?= $id ?>'>Edit Post</a>
       </div>
     </div>
   </div>
@@ -56,8 +56,17 @@ switch ($_GET['action']) {
       ":title" => $title,
       ":content" => $content,
     ]);
-
     break;
+
+  case 'delete_post':
+    header('HX-Trigger: post_update');
+    $id = $_GET['id'];
+    $sql = $db->prepare('delete from posts where id = :id limit 1');
+    $sql->execute([
+      ":id" => $id,
+    ]);
+    break;
+
 
   default:
     echo 'Invalid action';
