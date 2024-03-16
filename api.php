@@ -20,17 +20,22 @@ function render_post($id, $title, $content, $image)
 <?php
 }
 
+function  upload_Image()
+{
+  $uploadDir = 'uploads/';
+  $imageSrc = $uploadDir . basename($_FILES['file']['name']);
+  move_uploaded_file($_FILES['file']['tmp_name'], $imageSrc);
+  return $imageSrc;
+}
+
 switch ($_GET['action']) {
   case 'add_post':
-
-    $uploadDir = 'uploads/';
-    $imageSrc = $uploadDir . basename($_FILES['file']['name']);
-    move_uploaded_file($_FILES['file']['tmp_name'], $imageSrc);
 
     if ($_POST['title'] == "" || $_POST['content'] == "") {
       break;
     }
 
+    $imageSrc = upload_Image();
     $sql = $db->prepare('insert into posts (title, content, image) values (:title, :content, :image)');
     $sql->execute([
       ":title" => $_POST['title'],
@@ -55,12 +60,14 @@ switch ($_GET['action']) {
     $id = $_POST['id'];
     $title = $_POST['title'];
     $content = $_POST['content'];
+    $image = upload_Image();
 
-    $sql = $db->prepare('update posts set title = :title, content = :content where id = :id limit 1');
+    $sql = $db->prepare('update posts set title = :title, content = :content, image = :image where id = :id limit 1');
     $sql->execute([
       ":id" => $id,
       ":title" => $title,
       ":content" => $content,
+      ":image" => $image,
     ]);
     break;
 
